@@ -1,2 +1,6 @@
-package com.app.instazoo.entity.enums;public class ERole {
+package com.app.instazoo.entity.enums;
+
+public enum ERole {
+    ROLE_USER,
+    ADMIN
 }
