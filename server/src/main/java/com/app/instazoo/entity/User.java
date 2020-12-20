@@ -2,18 +2,20 @@ package com.app.instazoo.entity;
 
 import com.app.instazoo.entity.enums.ERole;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @Entity
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,6 +28,10 @@ public class User {
     private String email;
     @Column(columnDefinition = "text")
     private String bio;
+    @Column(length = 3000)
+    @JsonIgnore
+    private String password;
+
     @ElementCollection(targetClass = ERole.class)
     @CollectionTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"))
@@ -43,9 +49,69 @@ public class User {
     @Column(updatable = false)
     private LocalDateTime createdDate;
 
+    @Transient
+    private Collection<? extends GrantedAuthority> authorities;
+
+    public User() {}
+
+    public User(Long id, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.authorities = authorities;
+    }
+
+    public static User build(User user) {
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .collect(Collectors.toList());
+
+        return new User(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword(),
+                authorities);
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdDate = LocalDateTime.now();
     }
 
+
+    /**
+     * Security
+     */
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
