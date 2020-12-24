@@ -18,9 +18,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(nullable = false)
     private String name;
     @Column(unique = true)
     private String username;
+    @Column(nullable = false)
     private String lastname;
     @Column(unique = true)
     private String email;

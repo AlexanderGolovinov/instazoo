@@ -3,20 +3,25 @@ package com.app.instazoo.services;
 import com.app.instazoo.entity.User;
 import com.app.instazoo.entity.enums.ERole;
 import com.app.instazoo.exceptions.UserExistException;
+import com.app.instazoo.DTO.UserDTO;
 import com.app.instazoo.payload.request.SignupRequest;
 import com.app.instazoo.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.security.Principal;
+import java.util.List;
 
 @Service
 public class UserService {
     public static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder; //add later with security
 
     @Autowired
     public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
@@ -25,19 +30,41 @@ public class UserService {
     }
 
     public User createUser(SignupRequest userIn) {
-
         User user = new User();
-        user.setEmail(userIn.getUsername());
+        user.setEmail(userIn.getEmail());
         user.setName(userIn.getFirstname());
         user.setLastname(userIn.getLastname());
+        user.setUsername(userIn.getUsername());
         user.setPassword(passwordEncoder.encode(userIn.getPassword()));
         user.getRoles().add(ERole.ROLE_USER);
+
         try {
-            LOG.info("Saving User {}", userIn.getUsername());
+            LOG.info("Saving User {}", userIn.getEmail());
             return userRepository.save(user);
         } catch (Exception e) {
             LOG.error("Error during registration. {}", e.getMessage());
             throw new UserExistException("The user " + user.getUsername() + " already exist. Please check credentials");
         }
+    }
+
+    public User updateUser(UserDTO userDTO, Principal principal) {
+        User user = userRepository.findUserByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        user.setName(userDTO.getName());
+        user.setLastname(userDTO.getLastname());
+        user.setUsername(userDTO.getUsername());
+        user.setBio(userDTO.getBio());
+
+        return userRepository.save(user);
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() ->
+                new UsernameNotFoundException("User not found"));
+    }
+
+    public List<User> getUsersContainingUsername(String username) {
+        return userRepository.findByUsernameContaining(username);
     }
 }
