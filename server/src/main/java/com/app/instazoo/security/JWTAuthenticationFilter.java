@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
     public static final Logger LOG = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
@@ -33,16 +34,18 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 Long userId = jwtTokenProvider.getUserIdFromToken(jwt);
                 User userDetails = customUserDetailsService.loadUserById(userId);
 
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, Collections.emptyList());
 
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
             }
-
-        } catch (Exception e) {
-            LOG.error("Could not authenticate user: {}", e.getMessage());
+        } catch (Exception ex) {
+            LOG.error("Could not set user authentication");
         }
+
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
     private String getJWTFromRequest(HttpServletRequest request) {
@@ -52,5 +55,4 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
 }

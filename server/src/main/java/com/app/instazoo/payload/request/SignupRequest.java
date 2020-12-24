@@ -13,13 +13,15 @@ import javax.validation.constraints.NotEmpty;
 public class SignupRequest {
 
     @Email(message = "Username needs to be an email")
-    @NotBlank(message = "User name is required")
+    @NotBlank(message = "User email is required")
     @ValidEmail
-    private String username;
+    private String email;
     @NotEmpty(message = "Please enter your name")
     private String firstname;
     @NotEmpty(message = "Please enter your lastname")
     private String lastname;
+    @NotEmpty(message = "Please create username")
+    private String username;
     @NotEmpty(message = "Password is required")
     private String password;
     private String confirmPassword;
