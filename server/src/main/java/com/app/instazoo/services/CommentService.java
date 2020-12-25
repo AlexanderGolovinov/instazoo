@@ -1,5 +1,6 @@
 package com.app.instazoo.services;
 
+import com.app.instazoo.DTO.CommentDTO;
 import com.app.instazoo.entity.Comment;
 import com.app.instazoo.entity.Post;
 import com.app.instazoo.entity.User;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -30,19 +32,42 @@ public class CommentService {
         this.userRepository = userRepository;
     }
 
-    public Comment saveComment(Long postId, Comment comment, Principal principal) {
+    public Comment saveComment(Long postId, CommentDTO commentDTO, Principal principal) {
         User user = getUserByPrincipal(principal);
-        Post post = getPostById(postId, principal);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post cannot be found for username: {}" + user.getEmail()));
+
+        Comment comment = new Comment();
+        comment.setPost(post);
+        comment.setUserId(user.getId());
+        comment.setUsername(user.getUsername());
+        comment.setMessage(commentDTO.getMessage());
 
         comment.setUsername(user.getUsername());
         comment.setPost(post);
+        LOG.info("Saving comment for Post: {}", post.getId());
         return commentRepository.save(comment);
     }
 
+    public List<Comment> getAllCommentsForPost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post cannot be found"));
+        List<Comment> comments = commentRepository.findAllByPost(post);
+
+        return comments;
+    }
+
+    public void deleteComment(Long commentId, Principal principal) {
+        User user = getUserByPrincipal(principal);
+        Comment comment = commentRepository.findByIdAndUserId(commentId, user.getId());
+
+        commentRepository.delete(comment);
+    }
+
     private User getUserByPrincipal(Principal principal) {
-        String userEmail = principal.getName();
-        return userRepository.findUserByEmail(userEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username: " + userEmail));
+        String username = principal.getName();
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username: " + username));
     }
 
     private Post getPostById(Long postId, Principal principal) {

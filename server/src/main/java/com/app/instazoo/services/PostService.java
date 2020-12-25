@@ -1,10 +1,9 @@
 package com.app.instazoo.services;
 
-import com.app.instazoo.entity.Comment;
+import com.app.instazoo.DTO.PostDTO;
 import com.app.instazoo.entity.Post;
 import com.app.instazoo.entity.User;
 import com.app.instazoo.exceptions.PostNotFoundException;
-import com.app.instazoo.repository.CommentRepository;
 import com.app.instazoo.repository.PostRepository;
 import com.app.instazoo.repository.UserRepository;
 import org.slf4j.Logger;
@@ -22,23 +21,22 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
 
     @Autowired
-    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-        this.commentRepository = commentRepository;
     }
 
-    public Post createOrUpdatePost(Post post, Principal principal) {
+    public Post createPost(PostDTO postDTO, Principal principal) {
         User user = getUserByPrincipal(principal);
+        Post post = new Post();
+
         post.setUser(user);
-        if (post.getId() != null) {
-            List<Comment> comments = commentRepository.findAllByPost(post);
-            post.setComments(comments);
-            return postRepository.save(post);
-        }
+        post.setCaption(postDTO.getCaption());
+        post.setLocation(postDTO.getLocation());
+        post.setTitle(postDTO.getTitle());
+
         LOG.info("Saving Post for User: {}", user.getEmail());
         return postRepository.save(post);
     }
@@ -64,8 +62,8 @@ public class PostService {
     }
 
     private User getUserByPrincipal(Principal principal) {
-        String userEmail = principal.getName();
-        return userRepository.findUserByEmail(userEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username: " + userEmail));
+        String username = principal.getName();
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username: " + username));
     }
 }

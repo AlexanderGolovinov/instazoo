@@ -67,7 +67,8 @@ public class UserController {
     @GetMapping("/search/{username}")
     public ResponseEntity<List<UserDTO>> searchUsersContainingUsername(@PathVariable("username") String username) {
         List<UserDTO> users = userService.getUsersContainingUsername(username).stream()
-                .map(user -> userFacade.userToUserDTO(user)).collect(Collectors.toList());
+                .map(userFacade::userToUserDTO)
+                .collect(Collectors.toList());
 
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
