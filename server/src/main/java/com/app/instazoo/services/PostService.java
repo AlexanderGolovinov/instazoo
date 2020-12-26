@@ -1,9 +1,11 @@
 package com.app.instazoo.services;
 
 import com.app.instazoo.DTO.PostDTO;
+import com.app.instazoo.entity.ImageModel;
 import com.app.instazoo.entity.Post;
 import com.app.instazoo.entity.User;
 import com.app.instazoo.exceptions.PostNotFoundException;
+import com.app.instazoo.repository.ImageRepository;
 import com.app.instazoo.repository.PostRepository;
 import com.app.instazoo.repository.UserRepository;
 import org.slf4j.Logger;
@@ -11,9 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -21,11 +25,15 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ImageRepository imageRepository;
 
     @Autowired
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository,
+                       UserRepository userRepository,
+                       ImageRepository imageRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.imageRepository = imageRepository;
     }
 
     public Post createPost(PostDTO postDTO, Principal principal) {
@@ -58,7 +66,9 @@ public class PostService {
 
     public void deletePost(Long id, Principal principal) {
         Post post = getPostById(id, principal);
+        Optional<ImageModel> imageModel = imageRepository.findByPostId(post.getId());
         postRepository.delete(post);
+        imageModel.ifPresent(imageRepository::delete);
     }
 
     private User getUserByPrincipal(Principal principal) {
