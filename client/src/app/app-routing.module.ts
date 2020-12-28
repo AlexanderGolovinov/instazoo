@@ -2,10 +2,15 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {LoginComponent} from './auth/login/login.component';
 import {RegisterComponent} from './auth/register/register.component';
+import {IndexComponent} from './layout/index/index.component';
+import {ProfileComponent} from './user/profile/profile.component';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
-  {path: 'register', component: RegisterComponent}
+  {path: 'register', component: RegisterComponent},
+  {path: 'main', component: IndexComponent},
+  {path: 'profile', component: ProfileComponent},
+  {path: '', redirectTo: 'main', pathMatch: 'full'}
 ];
 
 @NgModule({

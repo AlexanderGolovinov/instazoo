@@ -45,6 +45,7 @@ export class LoginComponent implements OnInit {
 
       this.notificationService.showSnackBar('Successfully logged in');
       this.router.navigate(['/']);
+      window.location.reload();
 
     }, error => {
       console.log(error);

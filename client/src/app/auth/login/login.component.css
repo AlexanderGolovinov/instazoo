@@ -1,5 +1,6 @@
-#login-page {
+.login-page {
   text-align: center;
+  margin-top: 10rem;
 }
 
 #controls {
