@@ -30,8 +30,6 @@ public class PostController {
     @Autowired
     private ResponseErrorValidation responseErrorValidation;
 
-    //TODO UploadImageService missing
-
     @PostMapping("/create")
     public ResponseEntity<Object> createPost(@Valid @RequestBody PostDTO postDTO,
                                               BindingResult bindingResult,
