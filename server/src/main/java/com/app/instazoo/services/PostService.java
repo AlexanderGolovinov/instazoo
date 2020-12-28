@@ -1,10 +1,11 @@
 package com.app.instazoo.services;
 
-import com.app.instazoo.entity.Comment;
+import com.app.instazoo.DTO.PostDTO;
+import com.app.instazoo.entity.ImageModel;
 import com.app.instazoo.entity.Post;
 import com.app.instazoo.entity.User;
 import com.app.instazoo.exceptions.PostNotFoundException;
-import com.app.instazoo.repository.CommentRepository;
+import com.app.instazoo.repository.ImageRepository;
 import com.app.instazoo.repository.PostRepository;
 import com.app.instazoo.repository.UserRepository;
 import org.slf4j.Logger;
@@ -12,9 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -22,23 +25,26 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
+    private final ImageRepository imageRepository;
 
     @Autowired
-    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository) {
+    public PostService(PostRepository postRepository,
+                       UserRepository userRepository,
+                       ImageRepository imageRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-        this.commentRepository = commentRepository;
+        this.imageRepository = imageRepository;
     }
 
-    public Post createOrUpdatePost(Post post, Principal principal) {
+    public Post createPost(PostDTO postDTO, Principal principal) {
         User user = getUserByPrincipal(principal);
+        Post post = new Post();
+
         post.setUser(user);
-        if (post.getId() != null) {
-            List<Comment> comments = commentRepository.findAllByPost(post);
-            post.setComments(comments);
-            return postRepository.save(post);
-        }
+        post.setCaption(postDTO.getCaption());
+        post.setLocation(postDTO.getLocation());
+        post.setTitle(postDTO.getTitle());
+
         LOG.info("Saving Post for User: {}", user.getEmail());
         return postRepository.save(post);
     }
@@ -60,12 +66,14 @@ public class PostService {
 
     public void deletePost(Long id, Principal principal) {
         Post post = getPostById(id, principal);
+        Optional<ImageModel> imageModel = imageRepository.findByPostId(post.getId());
         postRepository.delete(post);
+        imageModel.ifPresent(imageRepository::delete);
     }
 
     private User getUserByPrincipal(Principal principal) {
-        String userEmail = principal.getName();
-        return userRepository.findUserByEmail(userEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username: " + userEmail));
+        String username = principal.getName();
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username: " + username));
     }
 }

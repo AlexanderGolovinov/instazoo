@@ -5,13 +5,9 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 
 @Data
-public class PostDTO {
+public class CommentDTO {
 
     private Long id;
     @NotEmpty
-    private String title;
-    @NotEmpty
-    private String caption;
-    private String location;
-
+    private String message;
 }
