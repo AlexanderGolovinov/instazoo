@@ -10,9 +10,10 @@ import {RegisterComponent} from './auth/register/register.component';
 import {authInterceptorProviders} from './helper/auth-interceptor.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
-import { NavigationComponent } from './layout/navigation/navigation.component';
-import { IndexComponent } from './layout/index/index.component';
-import { ProfileComponent } from './user/profile/profile.component';
+import {NavigationComponent} from './layout/navigation/navigation.component';
+import {IndexComponent} from './layout/index/index.component';
+import {ProfileComponent} from './user/profile/profile.component';
+import {authErrorInterceptorProviders} from './helper/error-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,7 @@ import { ProfileComponent } from './user/profile/profile.component';
     HttpClientModule,
     FormsModule,
   ],
-  providers: [authInterceptorProviders],
+  providers: [authInterceptorProviders, authErrorInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule {

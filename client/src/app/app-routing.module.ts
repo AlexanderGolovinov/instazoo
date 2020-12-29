@@ -4,12 +4,13 @@ import {LoginComponent} from './auth/login/login.component';
 import {RegisterComponent} from './auth/register/register.component';
 import {IndexComponent} from './layout/index/index.component';
 import {ProfileComponent} from './user/profile/profile.component';
+import {AuthGuardService} from './helper/auth-guard.service';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
-  {path: 'main', component: IndexComponent},
-  {path: 'profile', component: ProfileComponent},
+  {path: 'main', component: IndexComponent, canActivate: [AuthGuardService]},
+  {path: 'profile', component: ProfileComponent, canActivate: [AuthGuardService]},
   {path: '', redirectTo: 'main', pathMatch: 'full'}
 ];
 

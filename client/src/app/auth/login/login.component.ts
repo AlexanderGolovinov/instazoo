@@ -20,6 +20,9 @@ export class LoginComponent implements OnInit {
     private notificationService: NotificationService,
     private router: Router,
     private fb: FormBuilder) {
+    if (this.tokenStorage.getUser()) {
+      this.router.navigate(['/main']);
+    }
   }
 
   ngOnInit(): void {
@@ -46,7 +49,6 @@ export class LoginComponent implements OnInit {
       this.notificationService.showSnackBar('Successfully logged in');
       this.router.navigate(['/']);
       window.location.reload();
-
     }, error => {
       console.log(error);
       this.notificationService.showSnackBar(error.message);
