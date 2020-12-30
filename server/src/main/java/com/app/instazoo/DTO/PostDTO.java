@@ -13,5 +13,6 @@ public class PostDTO {
     @NotEmpty
     private String caption;
     private String location;
+    private String username;
 
 }

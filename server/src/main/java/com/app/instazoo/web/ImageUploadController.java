@@ -24,7 +24,7 @@ public class ImageUploadController {
      * Upload image to User
      */
     @PostMapping("/upload")
-    public ResponseEntity<MessageResponse> uploadImageToUser(@RequestParam("imageFile") MultipartFile file,
+    public ResponseEntity<MessageResponse> uploadImageToUser(@RequestParam("file") MultipartFile file,
                                                              Principal principal) throws IOException {
         imageUploadService.uploadImageToUser(file, principal);
         return ResponseEntity.ok(new MessageResponse("Image Uploaded Successfully"));
@@ -32,7 +32,7 @@ public class ImageUploadController {
 
     @PostMapping("/{postId}/upload")
     public ResponseEntity<MessageResponse> uploadImageToPost(@PathVariable("postId") String postId,
-                                                             @RequestParam("imageFile") MultipartFile file,
+                                                             @RequestParam("file") MultipartFile file,
                                                              Principal principal) throws IOException {
         imageUploadService.uploadImageToPost(file, principal, Long.parseLong(postId));
         return ResponseEntity.ok(new MessageResponse("Image Uploaded Successfully"));
@@ -55,5 +55,4 @@ public class ImageUploadController {
         ImageModel postImage = imageUploadService.getImageToPost(Long.parseLong(postId));
         return new ResponseEntity<>(postImage, HttpStatus.OK);
     }
-
 }

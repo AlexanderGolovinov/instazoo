@@ -1,0 +1,49 @@
+<div *ngIf="isUserDataLoaded && isUserPostsLoaded" class="user-profile">
+<h1>Profile</h1>
+
+  <div style="padding-top: 2rem" class="row">
+    <div class="col">
+      <img class="profile-image" [src]="formatImage(userProfileImage)" alt="user image">
+
+      <input type="file"
+             style="display: none"
+             #fileInput
+             (change)="onFileSelected($event)">
+
+      <button mat-button (click)="fileInput.click()">Pick File</button>
+      <button mat-button (click)="onUpload()">Upload</button>
+    </div>
+    <div class="col" style="text-align: left">
+      <h2>{{user.username}}</h2>
+
+      <h2>{{posts.length}} Posts</h2>
+
+      <h3 style="font-style: italic">{{user.firstname}} {{user.lastname}}</h3>
+      <p>{{user.bio}}</p>
+    </div>
+
+    <mat-divider style="margin: 2rem 0"></mat-divider>
+
+    <h2>Posts</h2>
+
+    <div>
+      <mat-card class="post-card" *ngFor="let post of posts">
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image"></div>
+          <mat-card-title>{{post.title}}</mat-card-title>
+          <mat-card-subtitle>{{post.location}}</mat-card-subtitle>
+        </mat-card-header>
+        <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo">
+        <mat-card-content>
+          <p>
+            {{post.caption}}
+          </p>
+        </mat-card-content>
+        <mat-card-actions align="start">
+          <button mat-button>LIKE</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+</div>

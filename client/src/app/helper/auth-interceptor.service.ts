@@ -11,10 +11,10 @@ import {Observable} from 'rxjs';
 
 const TOKEN_HEADER_KEY = 'Authorization';
 
-@Injectable()
 /**
  * HttpInterceptor has intercept() method to tranform HTTP requests before they sent to server.
  */
+@Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
 
   constructor(private tokenService: TokenStorageService) {

@@ -39,7 +39,6 @@ public class PostService {
     public Post createPost(PostDTO postDTO, Principal principal) {
         User user = getUserByPrincipal(principal);
         Post post = new Post();
-
         post.setUser(user);
         post.setCaption(postDTO.getCaption());
         post.setLocation(postDTO.getLocation());

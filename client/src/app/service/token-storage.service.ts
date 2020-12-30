@@ -32,7 +32,8 @@ export class TokenStorageService {
     return JSON.parse(sessionStorage.getItem(USER_KEY));
   }
 
-  signOut(): void {
+  logOut(): void {
     window.sessionStorage.clear();
+    window.location.reload();
   }
 }

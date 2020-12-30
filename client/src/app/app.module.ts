@@ -7,15 +7,22 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from './material-module';
 import {LoginComponent} from './auth/login/login.component';
 import {RegisterComponent} from './auth/register/register.component';
-import {AuthInterceptorService} from './helper/auth-interceptor.service';
+import {authInterceptorProviders} from './helper/auth-interceptor.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
+import {NavigationComponent} from './layout/navigation/navigation.component';
+import {IndexComponent} from './layout/index/index.component';
+import {ProfileComponent} from './user/profile/profile.component';
+import {authErrorInterceptorProviders} from './helper/error-interceptor.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    NavigationComponent,
+    IndexComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +34,7 @@ import {HttpClientModule} from '@angular/common/http';
     HttpClientModule,
     FormsModule,
   ],
-  providers: [AuthInterceptorService],
+  providers: [authInterceptorProviders, authErrorInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule {
