@@ -15,6 +15,8 @@ import {IndexComponent} from './layout/index/index.component';
 import {ProfileComponent} from './user/profile/profile.component';
 import {authErrorInterceptorProviders} from './helper/error-interceptor.service';
 import { EditUserComponent } from './user/edit-user/edit-user.component';
+import { UserPostsComponent } from './user/user-posts/user-posts.component';
+import { AddPostComponent } from './user/add-post/add-post.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { EditUserComponent } from './user/edit-user/edit-user.component';
     NavigationComponent,
     IndexComponent,
     ProfileComponent,
-    EditUserComponent
+    EditUserComponent,
+    UserPostsComponent,
+    AddPostComponent
   ],
   imports: [
     BrowserModule,

@@ -2,12 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {User} from '../../models/User';
 import {TokenStorageService} from '../../service/token-storage.service';
 import {UserService} from '../../service/user.service';
-import {Post} from '../../models/Post';
 import {PostService} from '../../service/post.service';
 import {ImageUploadService} from '../../service/image-upload.service';
-import {HttpClient} from '@angular/common/http';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {EditUserComponent} from '../edit-user/edit-user.component';
+import {NotificationService} from '../../service/notification.service';
 
 @Component({
   selector: 'app-profile',
@@ -17,16 +16,14 @@ import {EditUserComponent} from '../edit-user/edit-user.component';
 export class ProfileComponent implements OnInit {
 
   isUserDataLoaded = false;
-  isUserPostsLoaded = false;
   user: User;
-  posts: Post [];
   selectedFile: File;
   userProfileImage: File;
 
   constructor(private tokenService: TokenStorageService,
               private postService: PostService,
-              private http: HttpClient,
               private dialog: MatDialog,
+              private notificationService: NotificationService,
               private imageUploadService: ImageUploadService,
               private userService: UserService) {
   }
@@ -34,27 +31,17 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getCurrentUser()
       .subscribe(data => {
-        console.log(data);
         this.user = data;
         this.isUserDataLoaded = true;
       });
 
-    this.postService.getPostForCurrentUser()
-      .subscribe(data => {
-        console.log(data);
-        this.posts = data;
-        this.isUserPostsLoaded = true;
-      });
-
     this.imageUploadService.getProfileImage()
       .subscribe(data => {
-        console.log(data);
         this.userProfileImage = data.imageBytes;
       });
   }
 
   onFileSelected(event): void {
-    console.log(event);
     this.selectedFile = event.target.files[0];
   }
 
@@ -62,6 +49,7 @@ export class ProfileComponent implements OnInit {
     if (this.selectedFile != null) {
       this.imageUploadService.uploadImageToUser(this.selectedFile)
         .subscribe(data => {
+          this.notificationService.showSnackBar('Profile Image updated successfully');
           window.location.reload();
         });
     }
@@ -77,6 +65,9 @@ export class ProfileComponent implements OnInit {
   }
 
   formatImage(img: any): any {
+    if (img == null) {
+      return null;
+    }
     return 'data:image/jpeg;base64,' + img;
   }
 }
