@@ -55,22 +55,9 @@ public class CommentService {
         return comments;
     }
 
-    public void deleteComment(Long commentId, Principal principal) {
-        User user = getUserByPrincipal(principal);
-        Comment comment = commentRepository.findByIdAndUserId(commentId, user.getId());
-
-        commentRepository.delete(comment);
-    }
-
     private User getUserByPrincipal(Principal principal) {
         String username = principal.getName();
         return userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with username: " + username));
-    }
-
-    private Post getPostById(Long postId, Principal principal) {
-        User user = getUserByPrincipal(principal);
-        return postRepository.findPostByIdAndUser(postId, user)
-                .orElseThrow(() -> new PostNotFoundException("Post cannot be found for username: {}" + user.getEmail()));
     }
 }

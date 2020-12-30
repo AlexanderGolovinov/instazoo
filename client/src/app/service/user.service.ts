@@ -19,4 +19,8 @@ export class UserService {
   getCurrentUser(): Observable<any> {
     return this.http.get(USER_API);
   }
+
+  updateUser(user: any): Observable<any> {
+    return this.http.post(USER_API + 'update', user);
+  }
 }

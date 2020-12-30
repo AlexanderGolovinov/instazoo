@@ -6,6 +6,8 @@ import {Post} from '../../models/Post';
 import {PostService} from '../../service/post.service';
 import {ImageUploadService} from '../../service/image-upload.service';
 import {HttpClient} from '@angular/common/http';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {EditUserComponent} from '../edit-user/edit-user.component';
 
 @Component({
   selector: 'app-profile',
@@ -24,6 +26,7 @@ export class ProfileComponent implements OnInit {
   constructor(private tokenService: TokenStorageService,
               private postService: PostService,
               private http: HttpClient,
+              private dialog: MatDialog,
               private imageUploadService: ImageUploadService,
               private userService: UserService) {
   }
@@ -62,6 +65,15 @@ export class ProfileComponent implements OnInit {
           window.location.reload();
         });
     }
+  }
+
+  openEditDialog(): void {
+    const dialogUserEditConfig = new MatDialogConfig();
+    dialogUserEditConfig.width = '400px';
+    dialogUserEditConfig.data = {
+      user: this.user
+    };
+    this.dialog.open(EditUserComponent, dialogUserEditConfig);
   }
 
   formatImage(img: any): any {
