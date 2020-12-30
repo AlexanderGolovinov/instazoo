@@ -51,8 +51,7 @@ export class RegisterComponent implements OnInit {
       this.notificationService.showSnackBar('Successfully Registered!');
 
     }, error => {
-      console.log(error);
-      this.notificationService.showSnackBar(error.message);
+      this.notificationService.showSnackBar('Something went wrong during registration');
     });
   }
 

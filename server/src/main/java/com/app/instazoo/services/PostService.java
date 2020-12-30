@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.security.Principal;
 import java.util.List;
@@ -60,7 +59,7 @@ public class PostService {
 
     public List<Post> getAllPostForUser(Principal principal) {
         User user = getUserByPrincipal(principal);
-        return postRepository.findAllByUser(user);
+        return postRepository.findAllByUserOrderByCreatedDateDesc(user);
     }
 
     public void deletePost(Long id, Principal principal) {

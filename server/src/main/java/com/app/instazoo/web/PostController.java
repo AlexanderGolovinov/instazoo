@@ -9,9 +9,12 @@ import com.app.instazoo.validations.ResponseErrorValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -65,7 +68,6 @@ public class PostController {
                 .stream()
                 .map(postFacade::postToPostDTO)
                 .collect(Collectors.toList());
-
         return new ResponseEntity<>(postDTOList, HttpStatus.OK);
     }
 

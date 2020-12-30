@@ -26,6 +26,6 @@ export class PostService {
   }
 
   deletePost(id: number): Observable<any> {
-    return this.http.delete(POST_API + id + '/delete');
+    return this.http.post(POST_API + id + '/delete', null);
   }
 }
