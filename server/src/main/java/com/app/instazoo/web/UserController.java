@@ -66,6 +66,7 @@ public class UserController {
         return new ResponseEntity<>(userUpdated, HttpStatus.OK);
     }
 
+    //NB NOT IN DEMO
     /**
      * Метод для поиска Пользователей
      *

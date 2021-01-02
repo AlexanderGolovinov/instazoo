@@ -28,4 +28,8 @@ export class PostService {
   deletePost(id: number): Observable<any> {
     return this.http.post(POST_API + id + '/delete', null);
   }
+
+  likePost(id: number, username: string): Observable<any> {
+    return this.http.post(POST_API + id + '/' + username + '/like', null);
+  }
 }
