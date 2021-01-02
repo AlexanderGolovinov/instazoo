@@ -3,6 +3,7 @@ package com.app.instazoo.DTO;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.Set;
 
 @Data
 public class PostDTO {
@@ -14,5 +15,7 @@ public class PostDTO {
     private String caption;
     private String location;
     private String username;
+    private Integer likes;
+    private Set<String> usersLiked;
 
 }

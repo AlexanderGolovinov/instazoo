@@ -2,10 +2,18 @@
   display: block;
   margin: 0 auto;
   width: 60%;
-  text-align: center;
   padding-top: 3rem;
 }
 
 .post-card {
+  width: 80%;
   margin: 2rem 0;
+}
+
+.is-liked {
+  color: darkred;
+}
+
+.not-liked {
+  color: grey;
 }

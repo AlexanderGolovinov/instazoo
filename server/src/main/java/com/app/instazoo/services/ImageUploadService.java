@@ -85,8 +85,12 @@ public class ImageUploadService {
     }
 
     public ImageModel getImageToPost(Long postId) {
-        return imageRepository.findByPostId(postId)
+        ImageModel imageModel = imageRepository.findByPostId(postId)
                 .orElseThrow(() -> new ImageNotFoundException("Cannot find Image to Post:  " + postId));
+        if (!ObjectUtils.isEmpty(imageModel)) {
+            imageModel.setImageBytes(decompressBytes(imageModel.getImageBytes()));
+        }
+        return imageModel;
     }
 
     // compress the image bytes before storing it in the database

@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {PostService} from '../../service/post.service';
 import {Post} from '../../models/Post';
 import {NotificationService} from '../../service/notification.service';
+import {ImageUploadService} from '../../service/image-upload.service';
+import {CommentService} from '../../service/comment.service';
 
 @Component({
   selector: 'app-user-posts',
@@ -14,6 +16,8 @@ export class UserPostsComponent implements OnInit {
   posts: Post [];
 
   constructor(private postService: PostService,
+              private imageService: ImageUploadService,
+              private commentService: CommentService,
               private notificationService: NotificationService) {
   }
 
@@ -22,8 +26,29 @@ export class UserPostsComponent implements OnInit {
       .subscribe(data => {
         console.log(data);
         this.posts = data;
+        this.getImagesToPosts(this.posts);
+        this.getCommentsToPosts(this.posts);
         this.isUserPostsLoaded = true;
       });
+  }
+
+  getImagesToPosts(posts: Post[]): void {
+    posts.forEach(p => {
+      this.imageService.getImageToPost(p.id)
+        .subscribe(data => {
+          p.image = data.imageBytes;
+        });
+    });
+  }
+
+
+  getCommentsToPosts(posts: Post[]): void {
+    posts.forEach(p => {
+      this.commentService.getCommentsToPost(p.id)
+        .subscribe(data => {
+          p.comments = data;
+        });
+    });
   }
 
   removePost(post: Post, index: number): void {
@@ -36,5 +61,22 @@ export class UserPostsComponent implements OnInit {
           this.notificationService.showSnackBar('Post deleted');
         });
     }
+  }
+
+  formatImage(img: any): any {
+    if (img == null) {
+      return null;
+    }
+    return 'data:image/jpeg;base64,' + img;
+  }
+
+  deleteComment(commentId: number, postIndex: number, commentIndex: number): void {
+    const post = this.posts[postIndex];
+
+    this.commentService.deleteComment(commentId)
+      .subscribe(data => {
+        this.notificationService.showSnackBar('Comment removed');
+        post.comments.splice(commentIndex, 1);
+      });
   }
 }

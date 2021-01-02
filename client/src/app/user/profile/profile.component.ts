@@ -19,12 +19,13 @@ export class ProfileComponent implements OnInit {
   user: User;
   selectedFile: File;
   userProfileImage: File;
+  previewImgURL: any;
 
   constructor(private tokenService: TokenStorageService,
               private postService: PostService,
               private dialog: MatDialog,
               private notificationService: NotificationService,
-              private imageUploadService: ImageUploadService,
+              private imageService: ImageUploadService,
               private userService: UserService) {
   }
 
@@ -35,7 +36,7 @@ export class ProfileComponent implements OnInit {
         this.isUserDataLoaded = true;
       });
 
-    this.imageUploadService.getProfileImage()
+    this.imageService.getProfileImage()
       .subscribe(data => {
         this.userProfileImage = data.imageBytes;
       });
@@ -43,14 +44,19 @@ export class ProfileComponent implements OnInit {
 
   onFileSelected(event): void {
     this.selectedFile = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.readAsDataURL(this.selectedFile);
+    reader.onload = (e) => {
+      this.previewImgURL = reader.result;
+    };
   }
 
   onUpload(): void {
     if (this.selectedFile != null) {
-      this.imageUploadService.uploadImageToUser(this.selectedFile)
+      this.imageService.uploadImageToUser(this.selectedFile)
         .subscribe(data => {
           this.notificationService.showSnackBar('Profile Image updated successfully');
-          window.location.reload();
         });
     }
   }

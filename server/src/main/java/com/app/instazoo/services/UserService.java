@@ -73,6 +73,7 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found with username: " + username));
     }
 
+    //NB NOT IN DEMO
     public List<User> getUsersContainingUsername(String username) {
         return userRepository.findByUsernameContaining(username);
     }

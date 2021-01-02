@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentService {
@@ -53,6 +54,11 @@ public class CommentService {
         List<Comment> comments = commentRepository.findAllByPost(post);
 
         return comments;
+    }
+
+    public void deleteComment(Long commentId) {
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        comment.ifPresent(commentRepository::delete);
     }
 
     private User getUserByPrincipal(Principal principal) {

@@ -19,9 +19,6 @@ export class ImageUploadService {
     return this.http.post(IMAGE_API + 'upload', uploadData);
   }
 
-  getProfileImage(): Observable<any> {
-    return this.http.get(IMAGE_API + 'profileImage');
-  }
 
   uploadImageToPost(file: File, postId: number): Observable<any> {
     const uploadData = new FormData();
@@ -30,7 +27,11 @@ export class ImageUploadService {
     return this.http.post(IMAGE_API + postId + '/upload', uploadData);
   }
 
-  getImageToPost(postId: number): Observable<any> {
+  getProfileImage(): Observable<any> {
+    return this.http.get(IMAGE_API + 'profileImage');
+  }
+
+  getImageToPost(postId: number): any {
     return this.http.get(IMAGE_API + postId + '/image');
   }
 }

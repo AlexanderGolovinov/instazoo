@@ -17,7 +17,7 @@ export class AddPostComponent implements OnInit {
   selectedFile: File;
   isPostCreated = false;
   createdPost: Post;
-
+  previewImgURL: any;
 
   constructor(private postService: PostService,
               private imageUploadService: ImageUploadService,
@@ -61,7 +61,12 @@ export class AddPostComponent implements OnInit {
   }
 
   onFileSelected(event): void {
-    console.log(event);
     this.selectedFile = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.readAsDataURL(this.selectedFile);
+    reader.onload = (e) => {
+      this.previewImgURL = reader.result;
+    };
   }
 }

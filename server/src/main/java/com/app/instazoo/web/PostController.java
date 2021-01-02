@@ -72,8 +72,12 @@ public class PostController {
     }
 
 
-
-
-
+    @PostMapping("/{postId}/{username}/like")
+    public ResponseEntity<PostDTO> likePost(@PathVariable("postId") String postId,
+                                                    @PathVariable("username") String username) {
+        Post post = postService.likePost(Long.parseLong(postId), username);
+        PostDTO postDTO = postFacade.postToPostDTO(post);
+        return new ResponseEntity<>(postDTO, HttpStatus.OK);
+    }
 
 }
