@@ -38,10 +38,6 @@ export class EditUserComponent implements OnInit {
       bio: [
         this.data.user.bio,
         Validators.compose([Validators.required]),
-      ],
-      username: [
-        this.data.user.username,
-        Validators.compose([Validators.required]),
       ]
     });
   }
@@ -63,7 +59,6 @@ export class EditUserComponent implements OnInit {
     this.data.user.firstname = this.profileEditForm.value.firstName;
     this.data.user.lastname = this.profileEditForm.value.lastName;
     this.data.user.bio = this.profileEditForm.value.bio;
-    this.data.user.username = this.profileEditForm.value.username;
     return this.data.user;
   }
 }
